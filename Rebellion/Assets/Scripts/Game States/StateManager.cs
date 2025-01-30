@@ -9,6 +9,9 @@ public class StateManager : MonoBehaviour
     [SerializeField]
     private GameStateViewer gameStateViewer;
 
+    [SerializeField]
+    ServerManager serverManager;
+
     private int currentState;
 
     private float currentStateLength;
@@ -33,6 +36,8 @@ public class StateManager : MonoBehaviour
         currentStateLength -= Time.deltaTime;
         if (currentStateLength <= 0.0f)
         {
+            gameStates[currentState].EndState();
+
             ++currentState;
 
             if (currentState == gameStates.Count)
@@ -53,9 +58,8 @@ public class StateManager : MonoBehaviour
 
     private void GetGameStates()
     {
-        MonoBehaviour[] scripts = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None);
-
-        foreach (MonoBehaviour script in scripts)
-            if (script is IGameState) gameStates.Add(script as IGameState);
+        gameStates.Add(gameObject.GetComponent<DiscussionState>());
+        gameStates.Add(gameObject.GetComponent<TrialState>());
+        gameStates.Add(gameObject.GetComponent<ActionsState>());
     }
 }

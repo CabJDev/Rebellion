@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class ActionsState : MonoBehaviour, IGameState
 {
+    [SerializeField]
+    ServerManager serverManager;
+
     public float GetStateLength() { return 30; }
 
     public void GameStateActions()
@@ -9,9 +12,15 @@ public class ActionsState : MonoBehaviour, IGameState
         Debug.Log("Player actions");
     }
 
+    public void EndState()
+    {
+        serverManager.SendData("Action state ended!");
+    }
+
     public void Transition()
     {
         Debug.Log("Transition into action state");
+        Debug.Log(serverManager.RetrieveData());
         GameStateActions();
     }
 }

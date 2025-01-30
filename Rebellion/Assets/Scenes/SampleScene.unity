@@ -960,6 +960,50 @@ MonoBehaviour:
   clock: {fileID: 194600908}
   day: {fileID: 1438016095}
   phase: {fileID: 907217634}
+--- !u!1 &1340225106
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1340225108}
+  - component: {fileID: 1340225107}
+  m_Layer: 0
+  m_Name: _ServerManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1340225107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1340225106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b4410bef9de6d143afdb6029eb61b29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1340225108
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1340225106}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1438016093
 GameObject:
   m_ObjectHideFlags: 0
@@ -1318,6 +1362,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameStateViewer: {fileID: 1017595295}
+  serverManager: {fileID: 1340225107}
 --- !u!4 &2064528922
 Transform:
   m_ObjectHideFlags: 0
@@ -1345,6 +1390,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f00f5d68b06feee408cb3290e7e0af36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serverManager: {fileID: 1340225107}
 --- !u!114 &2064528924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1357,6 +1403,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf9f40b6931c0c144ac3fc5c371a1b86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serverManager: {fileID: 1340225107}
 --- !u!114 &2064528925
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1369,15 +1416,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9a613907e22b064fb0afab0b485ddc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serverManager: {fileID: 1340225107}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1340225108}
+  - {fileID: 2064528922}
+  - {fileID: 1017595294}
+  - {fileID: 219435191}
   - {fileID: 330585546}
   - {fileID: 410087041}
   - {fileID: 832575519}
-  - {fileID: 219435191}
-  - {fileID: 1017595294}
   - {fileID: 1762066155}
   - {fileID: 1665143002}
-  - {fileID: 2064528922}
