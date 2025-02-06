@@ -10,7 +10,14 @@ public class StateManager : MonoBehaviour
     private GameStateViewer gameStateViewer;
 
     [SerializeField]
-    ServerManager serverManager;
+    private ServerManager serverManager;
+
+    [SerializeField]
+    private Transform alivePlayerModels;
+    [SerializeField]
+    private Transform deadPlayerModels;
+
+    private PlayerManager playerManager;
 
     private int currentState;
 
@@ -19,6 +26,8 @@ public class StateManager : MonoBehaviour
 
     private void Start()
     {
+        playerManager = PlayerManager.Instance;
+
         gameStates = new List<IGameState>();
         GetGameStates();
 
@@ -29,6 +38,29 @@ public class StateManager : MonoBehaviour
         gameStateViewer.SetDay(currentDay);
         gameStateViewer.SetPhase(gameStates[0].GetType().ToString());
         gameStateViewer.SetTime(currentStateLength);
+
+        foreach (Player player in playerManager.players)
+        {
+            if (player.id != 0)
+            {
+                GameObject playerModel = alivePlayerModels.Find(player.id.ToString()).gameObject;
+                playerModel.SetActive(true);
+            }
+        }
+
+        for (int i = 0; i < gameStates.Count; i++)
+        {
+            if (playerManager.IsPlayer(i + 1))
+            {
+                GameObject playerModel = alivePlayerModels.Find(playerManager.players[i + 1].id.ToString()).gameObject;
+                playerModel.SetActive(true);
+            }
+            else
+            {
+                GameObject playerModel = deadPlayerModels.Find(playerManager.players[i + 1].id.ToString()).gameObject;
+                playerModel.SetActive(true);
+            }
+        }
     }
 
     private void Update()

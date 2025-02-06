@@ -1,11 +1,13 @@
+using UnityEditor;
 using UnityEngine;
 
-struct Player
+public struct Player
 {
     public int id;
     public string name;
     public int alignment;
     public int role;
+    public bool alive;
 
     public Player(int id, string name, int alignment, int role)
     {
@@ -13,6 +15,7 @@ struct Player
         this.name = name;
         this.alignment = alignment;
         this.role = role;
+        this.alive = true;
     }
 }
 
@@ -20,8 +23,8 @@ public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager Instance;
 
-    Player[] players;
-    Player nullPlayer;
+    public Player[] players;
+    public Player nullPlayer;
 
     private void Awake()
     {
@@ -39,11 +42,10 @@ public class PlayerManager : MonoBehaviour
     {
         players = new Player[15];
         nullPlayer = new Player(0, "", 0, 0);
+        nullPlayer.alive = false;
 
         for (int i = 0; i < players.Length; ++i)
-        {
             players[i] = nullPlayer;
-        }
     }
 
     public bool AddPlayer(string playerName)
@@ -54,7 +56,7 @@ public class PlayerManager : MonoBehaviour
             if (players[i].id == 0)
             {
                 players[i] = new Player(i + 1, playerName, 0, 0);
-                Debug.Log("Added player at " + (i + 1));
+                players[i].alive = true;
                 return true;
             }
         }
