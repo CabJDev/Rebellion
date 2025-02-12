@@ -6,6 +6,7 @@ public class DiscussionState : MonoBehaviour, IGameState
     ServerManager serverManager;
 
     public float GetStateLength() { return 30; }
+    public string GetStateName() { return "Discussion"; }
 
     public void GameStateActions()
     {
@@ -20,7 +21,7 @@ public class DiscussionState : MonoBehaviour, IGameState
     public void Transition()
     {
         Debug.Log("Transition into discussion state");
-        Debug.Log(serverManager.RetrieveData());
+        Debug.Log(serverManager.RetrieveData(0));
         GameStateActions();
     }
 }

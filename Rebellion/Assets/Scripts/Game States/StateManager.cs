@@ -36,7 +36,7 @@ public class StateManager : MonoBehaviour
         currentStateLength = gameStates[0].GetStateLength();
 
         gameStateViewer.SetDay(currentDay);
-        gameStateViewer.SetPhase(gameStates[0].GetType().ToString());
+        gameStateViewer.SetPhase(gameStates[0].GetStateName());
         gameStateViewer.SetTime(currentStateLength);
 
         foreach (Player player in playerManager.players)
@@ -70,7 +70,10 @@ public class StateManager : MonoBehaviour
         {
             gameStates[currentState].EndState();
 
-            ++currentState;
+            if (currentDay == 0 && currentState == 0)
+                currentState = 2;
+            else
+                ++currentState;
 
             if (currentState == gameStates.Count)
             {
@@ -83,7 +86,7 @@ public class StateManager : MonoBehaviour
             gameStates[currentState].Transition();
             currentStateLength = gameStates[currentState].GetStateLength();
 
-            gameStateViewer.SetPhase(gameStates[currentState].GetType().ToString());
+            gameStateViewer.SetPhase(gameStates[currentState].GetStateName());
         }
         gameStateViewer.SetTime(currentStateLength);
     }

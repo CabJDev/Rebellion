@@ -26,6 +26,8 @@ public class PlayerManager : MonoBehaviour
     public Player[] players;
     public Player nullPlayer;
 
+    public int playerCount = 15;
+
     private void Awake()
     {
         if (Instance != null)

@@ -6,6 +6,7 @@ public class ActionsState : MonoBehaviour, IGameState
     ServerManager serverManager;
 
     public float GetStateLength() { return 30; }
+    public string GetStateName() { return "Actions"; }
 
     public void GameStateActions()
     {
@@ -20,7 +21,7 @@ public class ActionsState : MonoBehaviour, IGameState
     public void Transition()
     {
         Debug.Log("Transition into action state");
-        Debug.Log(serverManager.RetrieveData());
+        Debug.Log(serverManager.RetrieveData(2));
         GameStateActions();
     }
 }
