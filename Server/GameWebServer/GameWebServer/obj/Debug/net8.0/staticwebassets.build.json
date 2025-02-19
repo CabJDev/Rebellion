@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "p+/CQFu9pTmz3EI470KjCjwp/HhF61iZXl1ETPQib9Q=",
+  "Hash": "rXij3/xAwvVClww3fe0ITWb7nmDZFp9ZmRNLTFJcCKM=",
   "Source": "GameWebServer",
   "BasePath": "_content/GameWebServer",
   "Mode": "Default",
@@ -73,8 +73,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "9an2iaaad5",
-      "Integrity": "n0PAsU96KGD1NYiYk1OeV7FnKqjc5JSQelw93usojMQ=",
+      "Fingerprint": "dvl3v3s23k",
+      "Integrity": "h8Nd9KBRU9ihE5xL/YhK11Y6wGE4JSB2O5+ZstPsjbA=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\clienthub.js"
@@ -1506,7 +1506,7 @@
       ]
     },
     {
-      "Route": "js/clienthub.9an2iaaad5.js",
+      "Route": "js/clienthub.dvl3v3s23k.js",
       "AssetFile": "C:\\Users\\John - School\\Desktop\\CMPT 496\\Rebellion\\Server\\GameWebServer\\GameWebServer\\wwwroot\\js\\clienthub.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -1516,7 +1516,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "708"
+          "Value": "843"
         },
         {
           "Name": "Content-Type",
@@ -1524,11 +1524,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"n0PAsU96KGD1NYiYk1OeV7FnKqjc5JSQelw93usojMQ=\""
+          "Value": "\"h8Nd9KBRU9ihE5xL/YhK11Y6wGE4JSB2O5+ZstPsjbA=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 18 Feb 2025 20:00:29 GMT"
+          "Value": "Wed, 19 Feb 2025 20:08:50 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1538,7 +1538,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "9an2iaaad5"
+          "Value": "dvl3v3s23k"
         },
         {
           "Name": "label",
@@ -1546,7 +1546,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-n0PAsU96KGD1NYiYk1OeV7FnKqjc5JSQelw93usojMQ="
+          "Value": "sha256-h8Nd9KBRU9ihE5xL/YhK11Y6wGE4JSB2O5+ZstPsjbA="
         }
       ]
     },
@@ -1561,7 +1561,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "708"
+          "Value": "843"
         },
         {
           "Name": "Content-Type",
@@ -1569,11 +1569,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"n0PAsU96KGD1NYiYk1OeV7FnKqjc5JSQelw93usojMQ=\""
+          "Value": "\"h8Nd9KBRU9ihE5xL/YhK11Y6wGE4JSB2O5+ZstPsjbA=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 18 Feb 2025 20:00:29 GMT"
+          "Value": "Wed, 19 Feb 2025 20:08:50 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1583,7 +1583,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-n0PAsU96KGD1NYiYk1OeV7FnKqjc5JSQelw93usojMQ="
+          "Value": "sha256-h8Nd9KBRU9ihE5xL/YhK11Y6wGE4JSB2O5+ZstPsjbA="
         }
       ]
     },

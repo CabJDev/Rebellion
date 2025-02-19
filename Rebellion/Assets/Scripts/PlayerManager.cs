@@ -3,16 +3,18 @@ using UnityEngine;
 
 public struct Player
 {
-    public int id;
+    public string id;
     public string name;
+    public int position;
     public int alignment;
     public int role;
     public bool alive;
 
-    public Player(int id, string name, int alignment, int role)
+    public Player(string id, string name, int position, int alignment, int role)
     {
         this.id = id;
         this.name = name;
+        this.position = position;
         this.alignment = alignment;
         this.role = role;
         this.alive = true;
@@ -43,21 +45,21 @@ public class PlayerManager : MonoBehaviour
     private void Start()
     {
         players = new Player[15];
-        nullPlayer = new Player(0, "", 0, 0);
+        nullPlayer = new Player("", "", 0, 0, 0);
         nullPlayer.alive = false;
 
         for (int i = 0; i < players.Length; ++i)
             players[i] = nullPlayer;
     }
 
-    public bool AddPlayer(string playerName)
+    public bool AddPlayer(string connectionID, string playerName)
     {
 
         for (int i = 0; i < players.Length; ++i)
         {
-            if (players[i].id == 0)
+            if (players[i].id == "")
             {
-                players[i] = new Player(i + 1, playerName, 0, 0);
+                players[i] = new Player(connectionID, playerName, i + 1, 0, 0);
                 players[i].alive = true;
                 return true;
             }
@@ -74,7 +76,7 @@ public class PlayerManager : MonoBehaviour
 
     public bool IsPlayer(int id)
     {
-        if (players[id].id == 0) return false;
+        if (players[id].id == "") return false;
         else return true;
     }
 
@@ -92,7 +94,7 @@ public class PlayerManager : MonoBehaviour
 
         for (int i = 0; i < players.Length; ++i)
         {
-            if (players[i].id != 0)
+            if (players[i].id != "")
             {
                 string alignment = "";
                 string role = "";

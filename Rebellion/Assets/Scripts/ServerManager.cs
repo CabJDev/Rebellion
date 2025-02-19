@@ -8,7 +8,7 @@ public class ServerManager : MonoBehaviour
     [SerializeField]
     TrialState trialState;
 
-    private Dictionary<int, int> playerVotes = new Dictionary<int, int>();
+    private Dictionary<string, int> playerVotes = new Dictionary<string, int>();
 
     private bool isVoting = false;
 
@@ -20,7 +20,7 @@ public class ServerManager : MonoBehaviour
 
         foreach (Player player in playerManager.players)
         {
-            if (player.id != 0) playerVotes.Add(player.id, 0);
+            if (player.id != "") playerVotes.Add(player.id, 0);
         }   
     }
 
@@ -29,22 +29,7 @@ public class ServerManager : MonoBehaviour
 
     private void Update()
     {
-        if (isVoting)
-        {
-            nextCall -= Time.deltaTime;
-
-            if (nextCall <= 0f && playerCount > 0)
-            {
-                nextCall = 1f;
-
-                int playerNum = Random.Range(0, 2);
-
-                playerVotes[playerNum + 1]++;
-
-                trialState.UpdateVotes(playerVotes);
-                playerCount--;
-            }
-        }
+        
     }
 
     // Temporary solution to get and send data

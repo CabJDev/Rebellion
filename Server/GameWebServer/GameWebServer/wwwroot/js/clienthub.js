@@ -2,6 +2,10 @@
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/ClientHub").build();
 
+connection.on("InvalidLobby", () => {
+    document.getElementById("error").innerText = "Invalid Code!"
+})
+
 document.getElementById("submitButton").disabled = true;
 
 connection.start().then(function () {
@@ -13,7 +17,8 @@ connection.start().then(function () {
 document.getElementById("submitButton").addEventListener("click", function (event) {
     var name = document.getElementById("name").value;
     var lobby = document.getElementById("lobbyCode").value;
-    connection.invoke("SendMessage", name, lobby).catch(function (err) {
+    console.log("Test");
+    connection.invoke("JoinLobby", name, lobby).catch(function (err) {
         return console.error(err.toString());
     })
 

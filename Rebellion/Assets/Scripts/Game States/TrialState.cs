@@ -19,14 +19,14 @@ public class TrialState : MonoBehaviour, IGameState
 
     }
 
-    private Dictionary<int, int> playerVotes = new Dictionary<int, int>();
+    private Dictionary<string, int> playerVotes = new Dictionary<string, int>();
 
     private void Start()
     {
         playerManager = PlayerManager.Instance;
 
         foreach (Player player in playerManager.players)
-            if (player.id != 0) playerVotes.Add(player.id, 0);
+            if (player.id != "") playerVotes.Add(player.id, 0);
     }
 
     public void UpdateVotes(Dictionary<int, int> votes)

@@ -48,8 +48,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>9an2iaaad5</Fingerprint>
-      <Integrity>n0PAsU96KGD1NYiYk1OeV7FnKqjc5JSQelw93usojMQ=</Integrity>
+      <Fingerprint>dvl3v3s23k</Fingerprint>
+      <Integrity>h8Nd9KBRU9ihE5xL/YhK11Y6wGE4JSB2O5+ZstPsjbA=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\clienthub.js'))</OriginalItemSpec>

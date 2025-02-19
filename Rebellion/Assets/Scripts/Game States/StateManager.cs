@@ -41,7 +41,7 @@ public class StateManager : MonoBehaviour
 
         foreach (Player player in playerManager.players)
         {
-            if (player.id != 0)
+            if (player.id != "")
             {
                 GameObject playerModel = alivePlayerModels.Find(player.id.ToString()).gameObject;
                 playerModel.SetActive(true);
