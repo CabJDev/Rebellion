@@ -43,21 +43,7 @@ public class StateManager : MonoBehaviour
         {
             if (player.id != "")
             {
-                GameObject playerModel = alivePlayerModels.Find(player.id.ToString()).gameObject;
-                playerModel.SetActive(true);
-            }
-        }
-
-        for (int i = 0; i < gameStates.Count; i++)
-        {
-            if (playerManager.IsPlayer(i + 1))
-            {
-                GameObject playerModel = alivePlayerModels.Find(playerManager.players[i + 1].id.ToString()).gameObject;
-                playerModel.SetActive(true);
-            }
-            else
-            {
-                GameObject playerModel = deadPlayerModels.Find(playerManager.players[i + 1].id.ToString()).gameObject;
+                GameObject playerModel = alivePlayerModels.Find(player.position.ToString()).gameObject;
                 playerModel.SetActive(true);
             }
         }

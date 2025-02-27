@@ -64,11 +64,11 @@ public class WebServerConnection
         }
     }
 
-    public async Task AddPlayerAsync(string connectionID, string lobbyCode, bool success)
+    public async Task AddPlayerAsync(string connectionID, string lobbyCode, string name, bool success)
     {
         try
         {
-            await connection.InvokeAsync("AddPlayer", connectionID, lobbyCode, success);
+            await connection.InvokeAsync("AddPlayer", connectionID, lobbyCode, name, success);
         }
         catch (Exception ex)
         {
@@ -84,7 +84,7 @@ public class WebServerConnection
         }
         catch (Exception ex)
         {
-            Debug.LogError($"Error {ex.Message}");
+            Debug.LogError($"Error: {ex.Message}");
         }
     }
 }

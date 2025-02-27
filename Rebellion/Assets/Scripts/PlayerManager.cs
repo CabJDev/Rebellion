@@ -1,4 +1,4 @@
-using UnityEditor;
+using System.Collections.Generic;
 using UnityEngine;
 
 public struct Player
@@ -29,6 +29,9 @@ public class PlayerManager : MonoBehaviour
     public Player nullPlayer;
 
     public int playerCount = 15;
+    public int currentPlayerCount = 0;
+
+    private Dictionary<string, int> usedNames;
 
     private void Awake()
     {
@@ -48,19 +51,30 @@ public class PlayerManager : MonoBehaviour
         nullPlayer = new Player("", "", 0, 0, 0);
         nullPlayer.alive = false;
 
+        usedNames = new Dictionary<string, int>();
+
         for (int i = 0; i < players.Length; ++i)
             players[i] = nullPlayer;
     }
 
-    public bool AddPlayer(string connectionID, string playerName)
+    public bool AddPlayer(string hash, string playerName)
     {
 
         for (int i = 0; i < players.Length; ++i)
         {
             if (players[i].id == "")
             {
-                players[i] = new Player(connectionID, playerName, i + 1, 0, 0);
+                if (usedNames.ContainsKey(playerName))
+                {
+                    usedNames[playerName]++;
+                    playerName += $" ({usedNames[playerName]})";
+                }
+
+                usedNames.Add(playerName, 0);
+
+                players[i] = new Player(hash, playerName, i + 1, 0, 0);
                 players[i].alive = true;
+                currentPlayerCount++;
                 return true;
             }
         }
@@ -68,22 +82,48 @@ public class PlayerManager : MonoBehaviour
         return false;
     }
 
-    public void RemovePlayer(int id) { players[id] = nullPlayer; }
-
-    public void SetAlignment(int id, int alignment) { players[id].alignment = alignment; }
-
-    public void SetRole(int id, int role) { players[id].role = role; }
-
-    public bool IsPlayer(int id)
+    public void RemovePlayer(string hash)
     {
-        if (players[id].id == "") return false;
-        else return true;
+        for (int i = 0; i <= players.Length; ++i)
+        {
+            if (players[i].id == hash)
+            {
+                if (usedNames[players[i].name] > 0) usedNames.Remove(players[i].name);
+                players[i] = nullPlayer;
+                currentPlayerCount--;
+                break;
+            }
+        }
     }
 
-    public bool IsAligned(int id)
+    public void SetAlignment(string hash, int alignment) {
+        int id = GetPlayerIndex(hash);
+        players[id].alignment = alignment; 
+    }
+
+    public void SetRole(string hash, int role) {
+        int id = GetPlayerIndex(hash);
+        players[id].role = role; 
+    }
+
+    public int GetPlayerIndex(string hash)
     {
-        if (players[id].alignment == 0) return false;
-        else return true;
+        for (int i = 0; i < players.Length; ++i)
+            if (players[i].id == hash) return i;
+
+        return -1;
+    }
+
+    public bool IsPlayer(int index)
+    {
+        return players[index].id != "";
+    }
+
+    public bool IsAligned(string hash)
+    {
+        int id = GetPlayerIndex(hash);
+
+        return players[id].alignment != 0;
     }
 
     public void PrintPlayers()
