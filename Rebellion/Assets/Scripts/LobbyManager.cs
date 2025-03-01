@@ -8,7 +8,9 @@ using UnityEngine.SceneManagement;
 
 public class LobbyManager : MonoBehaviour
 {
-    private string url = "http://192.168.1.71:5098";
+    //private string url = "https://localhost:7003";
+    //private string url = "http://192.168.1.71:5098";
+    private string url = "http://10.60.66.204:5098";
 
     public static LobbyManager Instance;
 
