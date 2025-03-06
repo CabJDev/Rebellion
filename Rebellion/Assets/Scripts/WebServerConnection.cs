@@ -76,6 +76,54 @@ public class WebServerConnection
         }
     }
 
+    public async Task StartGameAsync(string lobbyCode)
+    {
+        try
+        {
+            await connection.InvokeAsync("GameStarted", lobbyCode);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error {ex.Message}");
+        }
+    }
+
+    public async Task SendNamesAsync(string hash, string[] names)
+    {
+        try
+        {
+            await connection.InvokeAsync("GetNames", hash, names);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error {ex.Message}");
+        }
+    }
+
+    public async Task SendRoleInfoAsync(string hash, Role roleInfo)
+    {
+        try
+        {
+            await connection.InvokeAsync("SendRoleInfo", hash, roleInfo.roleName, roleInfo.roleDesc, roleInfo.winConditionDesc);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error {ex.Message}");
+        }
+    }
+
+    public async Task EnableButtonsAsync(string hash, int[] toEnable)
+    {
+        try
+        {
+            await connection.InvokeAsync("EnableButtons", hash, toEnable);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error {ex.Message}");
+        }
+    }
+
     private async Task StartConnectionAsync()
     {
         try

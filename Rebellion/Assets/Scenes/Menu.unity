@@ -299,7 +299,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c89ced3d019e9f4cbee387e08d61d00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerManager: {fileID: 127121746}
   lobbyText: {fileID: 1679307513}
   mainMenu: {fileID: 1864077110}
   lobbyCreation: {fileID: 114365712}
@@ -319,8 +318,6 @@ MonoBehaviour:
   - {fileID: 1410204195}
   - {fileID: 2041312011}
   - {fileID: 1746504818}
-  playerBackground: {fileID: 0}
-  lobbyCode: 
 --- !u!4 &135822065
 Transform:
   m_ObjectHideFlags: 0
@@ -1668,6 +1665,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 738040814}
   m_CullTransparentMesh: 1
+--- !u!1 &804845056
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 804845058}
+  - component: {fileID: 804845057}
+  m_Layer: 0
+  m_Name: _ServerManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &804845057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 804845056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b4410bef9de6d143afdb6029eb61b29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lobbyCode: 
+  waitingForPlayers: 0
+--- !u!4 &804845058
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 804845056}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &826209705
 GameObject:
   m_ObjectHideFlags: 0
@@ -2645,7 +2688,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 135822064}
         m_TargetAssemblyTypeName: LobbyManager, Assembly-CSharp
-        m_MethodName: StartGame
+        m_MethodName: StartGameButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5221,3 +5264,4 @@ SceneRoots:
   - {fileID: 127121747}
   - {fileID: 974953698}
   - {fileID: 135822065}
+  - {fileID: 804845058}

@@ -24,6 +24,7 @@ public class TrialState : MonoBehaviour, IGameState
     private void Start()
     {
         playerManager = PlayerManager.Instance;
+        serverManager = ServerManager.Instance;
 
         foreach (Player player in playerManager.players)
             if (player.id != "") playerVotes.Add(player.id, 0);
@@ -37,21 +38,17 @@ public class TrialState : MonoBehaviour, IGameState
             if (votes[playerID] >= Mathf.RoundToInt(playerManager.playerCount / 2) + 1)
             {
                 Debug.Log("Player " + playerID + " has been voted to trial!");
-                serverManager.StopVoting();
             }
         }
     }
 
     public void EndState()
     {
-        serverManager.SendData("Trial state ended!");
-        serverManager.StopVoting();
     }
 
     public void Transition()
     {
         Debug.Log("Transition into trial state");
-        Debug.Log(serverManager.RetrieveData(1));
         GameStateActions();
     }
 }

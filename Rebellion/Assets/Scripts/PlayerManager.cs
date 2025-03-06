@@ -31,7 +31,10 @@ public class PlayerManager : MonoBehaviour
     public int playerCount = 15;
     public int currentPlayerCount = 0;
 
-    private Dictionary<string, int> usedNames;
+    private List<string> usedNames;
+
+    public Dictionary<Player, int> selfAbilitesUsed;
+    public List<Player> rebels;
 
     private void Awake()
     {
@@ -51,7 +54,10 @@ public class PlayerManager : MonoBehaviour
         nullPlayer = new Player("", "", 0, 0, 0);
         nullPlayer.alive = false;
 
-        usedNames = new Dictionary<string, int>();
+        usedNames = new List<string>();
+        selfAbilitesUsed = new Dictionary<Player, int>();
+
+        rebels = new List<Player>();
 
         for (int i = 0; i < players.Length; ++i)
             players[i] = nullPlayer;
@@ -59,22 +65,18 @@ public class PlayerManager : MonoBehaviour
 
     public bool AddPlayer(string hash, string playerName)
     {
+        if (usedNames.Contains(playerName)) return false;
 
         for (int i = 0; i < players.Length; ++i)
         {
             if (players[i].id == "")
             {
-                if (usedNames.ContainsKey(playerName))
-                {
-                    usedNames[playerName]++;
-                    playerName += $" ({usedNames[playerName]})";
-                }
-
-                usedNames.Add(playerName, 0);
+                usedNames.Add(playerName);
 
                 players[i] = new Player(hash, playerName, i + 1, 0, 0);
                 players[i].alive = true;
                 currentPlayerCount++;
+
                 return true;
             }
         }
@@ -88,7 +90,7 @@ public class PlayerManager : MonoBehaviour
         {
             if (players[i].id == hash)
             {
-                if (usedNames[players[i].name] > 0) usedNames.Remove(players[i].name);
+                usedNames.Remove(players[i].name);
                 players[i] = nullPlayer;
                 currentPlayerCount--;
                 break;
@@ -98,7 +100,9 @@ public class PlayerManager : MonoBehaviour
 
     public void SetAlignment(string hash, int alignment) {
         int id = GetPlayerIndex(hash);
-        players[id].alignment = alignment; 
+        players[id].alignment = alignment;
+
+        if (alignment == 2) rebels.Add(players[GetPlayerIndex(hash)]);
     }
 
     public void SetRole(string hash, int role) {

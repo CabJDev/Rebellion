@@ -1,22 +1,14 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 public class LobbyManager : MonoBehaviour
 {
-    private string url = "http://192.168.1.71:5098";
-
-    public static LobbyManager Instance;
-
-    private readonly WebServerConnection connection = new();
-    public UnityEvent<Message> NewMessageReceived { get; } = new();
-
-    [SerializeField]
     private PlayerManager playerManager;
+    private RoleManager roleManager;
+    private ServerManager serverManager;
 
     private int rebels;
     private int neutrals;
@@ -30,15 +22,8 @@ public class LobbyManager : MonoBehaviour
     [SerializeField]
     private TMP_Text[] playerNames;
 
-    [SerializeField]
-    private GameObject playerBackground;
-
-    public string lobbyCode = "";
-
     bool waitingForCode = false;
     float connectionTimeOut = 30f;
-
-    bool waitingForPlayers = false;
 
     /*
      * Alignment Lists
@@ -56,32 +41,18 @@ public class LobbyManager : MonoBehaviour
      * 3 = Supportive
      */
 
-    private void Awake()
-    {
-        if (Instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
-    }
-
-    private async void Start()
+    private void Start()
     {
         playerManager = PlayerManager.Instance;
-
-        await InitAsync();
-
-        NewMessageReceived.AddListener(ServerMessage);
+        roleManager = RoleManager.Instance;
+        serverManager = ServerManager.Instance;
     }
 
     private void Update()
     {
-        if (waitingForCode && lobbyCode == "" && connectionTimeOut > 0)
+        if (waitingForCode && serverManager.lobbyCode == "" && connectionTimeOut > 0)
             connectionTimeOut -= Time.deltaTime;
-        else if (waitingForCode && lobbyCode != "")
+        else if (waitingForCode && serverManager.lobbyCode != "")
         {
             waitingForCode = false;
             SetUpLobby();
@@ -94,77 +65,39 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    private async void OnApplicationQuit()
-    {
-        Message msg = new()
-        {
-            Type = "CloseConnection",
-            Content = ""
-        };
-
-        await SendAsync(msg);
-    }
-
-    public async void ServerMessage(Message message)
-    {
-        if (message.Type == "CreateRoom") lobbyCode = message.Content;
-        else if (message.Type == "AddPlayer")
-        {
-            string[] content = message.Content.Split(',');
-
-            if (!waitingForPlayers)
-            {
-                await connection.AddPlayerAsync(content[0], lobbyCode, content[1], false);
-            }
-
-            bool success = playerManager.AddPlayer(content[2], content[1]);
-
-            await connection.AddPlayerAsync(content[0], lobbyCode, content[1], success);
-        }
-        else if (message.Type == "RemovePlayer") { playerManager.RemovePlayer(message.Content); }
-    }
-
-    private async Task InitAsync()
-    {
-        await connection.InitAsync<Message>($"{url}/ClientHub", "ReceiveMessage");
-        connection.OnMessageReceived += Receive;
-    }
-
-    public async Task SendAsync(Message msg)
-    {
-        await connection.SendMessageAsync(msg);
-    }
-
-    public async Task CreateLobby() { await connection.CreateLobbyAsync(); }
-
-    private void Receive(Message msg)
-    {
-        NewMessageReceived.Invoke(msg);
-    }
-
     public async void CreateLobbyButtonPressed()
     {
 
-        await CreateLobby();
+        await serverManager.CreateLobby();
 
         waitingForCode = true;
-
-        // Alignment selection
-        //neutrals = UnityEngine.Random.Range(0, 3);
-
-        //playerManager.PrintPlayers();
-        //SceneManager.LoadScene("Gameplay");
     }
 
-    public void StartGame()
+    public async void StartGameButton()
     {
         int playerAmount = playerManager.currentPlayerCount;
 
-        if (playerAmount < 3)
+        // TODO: SET MIN PLAYER AMOUNT TO 3!!
+
+        if (playerAmount == 1)
         {
-            Debug.LogError("Not enough players!");
+            Player player = playerManager.players[0];
+            playerManager.SetAlignment(player.id, 3);
+            playerManager.SetRole(player.id, 2);
+
+			playerManager.PrintPlayers();
+			await serverManager.StartGame();
+			SceneManager.LoadScene("Gameplay");
             return;
-        }
+		}
+        if (playerAmount == 2) // TODO: SET TO DO NOTHING IF LESS THAN 3 PLAYERS!!!
+        {
+
+			playerManager.PrintPlayers();
+			await serverManager.StartGame();
+			SceneManager.LoadScene("Gameplay");
+            return;
+		}
         else if (playerAmount == 3 || playerAmount == 4) // Best Case: 3v1 | Worst case: 2v1
         {
             neutrals = 0;
@@ -191,6 +124,7 @@ public class LobbyManager : MonoBehaviour
         SetLoyalists();
 
         playerManager.PrintPlayers();
+        await serverManager.StartGame();
         SceneManager.LoadScene("Gameplay");
     }
 
@@ -241,8 +175,8 @@ public class LobbyManager : MonoBehaviour
 
     private void SetUpLobby()
     {
-        waitingForPlayers = true;
-        lobbyText.text = lobbyCode;
+        serverManager.waitingForPlayers = true;
+        lobbyText.text = serverManager.lobbyCode;
 
         lobbyCreation.SetActive(true);
         mainMenu.SetActive(false);
