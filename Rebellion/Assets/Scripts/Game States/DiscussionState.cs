@@ -1,27 +1,48 @@
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class DiscussionState : MonoBehaviour, IGameState
 {
-    [SerializeField]
     ServerManager serverManager;
+    PlayerManager playerManager;
 
-    public float GetStateLength() { return 5; }
+    [SerializeField] private StateManager stateManager;
+
+    public float GetStateLength() { return 45; }
     public string GetStateName() { return "Discussion"; }
 
-	private void Start() { serverManager = ServerManager.Instance; }
+	private void Start()
+    {
+        playerManager = PlayerManager.Instance;
+        serverManager = ServerManager.Instance; 
+    }
 
 	public void GameStateActions()
     {
-        Debug.Log("Player dicussion phase");
     }
 
     public void EndState()
     {
-    }
+	}
 
-    public void Transition()
+	public void Transition()
     {
-        Debug.Log("Transition into discussion state");
-        GameStateActions();
+		
+		foreach (Player deadPlayer in serverManager.recentlyDead)
+        {
+            Task serverMsg = serverManager.SystemMessage($"{deadPlayer.name} died last night.");
+            int playerIndex = playerManager.GetPlayerIndex(deadPlayer.id);
+
+            stateManager.ShowDeadPlayer(playerIndex);
+        }
+
+        stateManager.ShowAlivePlayer();
+
+		serverManager.recentlyDead.Clear();
+		serverManager.CheckWinConditions();
+
+		Task dayMsg = serverManager.SystemMessage($"The king has called for a council meeting!");
+
+		GameStateActions();
     }
 }

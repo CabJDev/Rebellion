@@ -20,23 +20,6 @@ public class WebServerConnection
             OnMessageReceived?.Invoke(message);
         });
 
-        connection.Closed += async (exception) =>
-        {
-            if (exception == null)
-            {
-                Message msg = new Message();
-                msg.Type = "CloseConnection";
-                msg.Content = "";
-
-                await SendMessageAsync(msg);
-            } else
-            {
-                Message msg = new Message();
-                msg.Type = "CloseConnection";
-                msg.Content = exception.Message;
-            }
-        };
-
         await StartConnectionAsync();
     }
 
@@ -88,11 +71,11 @@ public class WebServerConnection
         }
     }
 
-    public async Task SendNamesAsync(string hash, string[] names)
+    public async Task SendNamesAsync(string hash, string[] names, int[] specials)
     {
         try
         {
-            await connection.InvokeAsync("GetNames", hash, names);
+            await connection.InvokeAsync("GetNames", hash, names, specials);
         }
         catch (Exception ex)
         {
@@ -121,6 +104,82 @@ public class WebServerConnection
         catch (Exception ex)
         {
             Debug.LogError($"Error {ex.Message}");
+        }
+    }
+
+    public async Task DisableButtonsAsync(string lobbyCode)
+    {
+        try
+        {
+            await connection.InvokeAsync("DisableButtons", lobbyCode);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error {ex.Message}");
+        }
+    }
+
+    public async Task PlayerKilledAsync(string lobbyCode, int playerIndex)
+    {
+        try
+        {
+            await connection.InvokeAsync("PlayerKilled", lobbyCode, playerIndex);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error {ex.Message}");
+        }
+    }
+
+    public async Task SystemMessageAsync(string lobbyCode, string message)
+    {
+        try
+        {
+            await connection.InvokeAsync("SystemMessage", lobbyCode, message, new DateTimeOffset(DateTime.UtcNow).ToUnixTimeMilliseconds().ToString());
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error {ex.Message}");
+        }
+    }
+
+    public async Task PlayerMessageAsync(string sender, string[] hashesToSend, string message)
+    {
+        try
+        {
+            await connection.InvokeAsync("PlayerMessage", sender, hashesToSend, message);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error {ex.Message}");
+        }
+    }
+
+    public async Task PlayerSystemMessageAsync(string hash, string message)
+    {
+        try
+        {
+            await connection.InvokeAsync("PlayerSystemMessage", hash, message);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error {ex.Message}");
+        }
+    }
+
+    public async Task CloseConnectionAsync()
+    {
+        try
+        {
+			Message msg = new Message();
+			msg.Type = "CloseConnection";
+			msg.Content = "";
+
+			await SendMessageAsync(msg);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error: {ex.Message}");
         }
     }
 

@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -21,6 +20,8 @@ public class LobbyManager : MonoBehaviour
     private GameObject lobbyCreation;
     [SerializeField]
     private TMP_Text[] playerNames;
+
+    [SerializeField] private Material shader;
 
     bool waitingForCode = false;
     float connectionTimeOut = 30f;
@@ -46,6 +47,8 @@ public class LobbyManager : MonoBehaviour
         playerManager = PlayerManager.Instance;
         roleManager = RoleManager.Instance;
         serverManager = ServerManager.Instance;
+
+        shader.SetFloat("_DensityMultiplier", 0f);
     }
 
     private void Update()
@@ -77,40 +80,23 @@ public class LobbyManager : MonoBehaviour
     {
         int playerAmount = playerManager.currentPlayerCount;
 
-        // TODO: SET MIN PLAYER AMOUNT TO 3!!
-
-        if (playerAmount == 1)
+        if (playerAmount == 1 || playerAmount == 2)
         {
-            Player player = playerManager.players[0];
-            playerManager.SetAlignment(player.id, 3);
-            playerManager.SetRole(player.id, 2);
-
-			playerManager.PrintPlayers();
-			await serverManager.StartGame();
-			SceneManager.LoadScene("Gameplay");
             return;
-		}
-        if (playerAmount == 2) // TODO: SET TO DO NOTHING IF LESS THAN 3 PLAYERS!!!
-        {
-
-			playerManager.PrintPlayers();
-			await serverManager.StartGame();
-			SceneManager.LoadScene("Gameplay");
-            return;
-		}
+        }
         else if (playerAmount == 3 || playerAmount == 4) // Best Case: 3v1 | Worst case: 2v1
         {
-            neutrals = 0;
-            rebels = 1;
-        }
-        else if (playerAmount >= 5 && playerAmount < 8) // Best Case: 6 v 2 | Worst case: 3 v 2
+			neutrals = 0;
+			rebels = 1;
+		}
+        else if (playerAmount >= 5 && playerAmount < 8) // Best Case: 6 v 2 | Worst case: 2 v 3
         {
-            neutrals = 0;
+            neutrals = Random.Range(0, 2);
             rebels = 2;
         }
-        else if (playerAmount >= 8 && playerAmount < 12) // Best Case: 8 v 3 | Worst case: 3 v 5
+        else if (playerAmount >= 8 && playerAmount < 12) // Best Case: 9 v 2 | Worst case: 4 v 4
         {
-            neutrals = Random.Range(1, 2);
+            neutrals = Random.Range(0, 2);
             rebels = Random.Range(2, 4);
         }
         else if (playerAmount >= 12) // Best Case: 11 v 4 | Worst Case: 9 v 6
@@ -123,9 +109,8 @@ public class LobbyManager : MonoBehaviour
         SetRebels();
         SetLoyalists();
 
-        playerManager.PrintPlayers();
         await serverManager.StartGame();
-        SceneManager.LoadScene("Gameplay");
+        SceneManager.LoadScene(1);
     }
 
     private void SetNeutrals()
@@ -156,7 +141,10 @@ public class LobbyManager : MonoBehaviour
             selectedPlayer[i] = player;
 
             playerManager.SetAlignment(player.id, 2);
-            playerManager.SetRole(player.id, Random.Range(1, 4));
+            if (playerManager.offensiveRebels.Count == 0)
+                playerManager.SetRole(player.id, 1);
+            else
+                playerManager.SetRole(player.id, Random.Range(2, 4));
         }
     }
 

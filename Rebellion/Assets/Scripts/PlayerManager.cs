@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public struct Player
@@ -25,6 +26,8 @@ public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager Instance;
 
+    private ServerManager serverManager;
+
     public Player[] players;
     public Player nullPlayer;
 
@@ -34,7 +37,10 @@ public class PlayerManager : MonoBehaviour
     private List<string> usedNames;
 
     public Dictionary<Player, int> selfAbilitesUsed;
-    public List<Player> rebels;
+    public List<string> rebels;
+    public List<string> loyalists;
+    public List<string> offensiveRebels;
+    public List<string> offensiveNeutrals;
 
     private void Awake()
     {
@@ -50,6 +56,8 @@ public class PlayerManager : MonoBehaviour
 
     private void Start()
     {
+        serverManager = ServerManager.Instance;
+
         players = new Player[15];
         nullPlayer = new Player("", "", 0, 0, 0);
         nullPlayer.alive = false;
@@ -57,7 +65,7 @@ public class PlayerManager : MonoBehaviour
         usedNames = new List<string>();
         selfAbilitesUsed = new Dictionary<Player, int>();
 
-        rebels = new List<Player>();
+        rebels = new List<string>();
 
         for (int i = 0; i < players.Length; ++i)
             players[i] = nullPlayer;
@@ -86,28 +94,37 @@ public class PlayerManager : MonoBehaviour
 
     public void RemovePlayer(string hash)
     {
-        for (int i = 0; i <= players.Length; ++i)
+        int playerIndex = GetPlayerIndex(hash);
+
+		usedNames.Remove(players[playerIndex].name);
+        if (serverManager.gameStarted)
         {
-            if (players[i].id == hash)
-            {
-                usedNames.Remove(players[i].name);
-                players[i] = nullPlayer;
-                currentPlayerCount--;
-                break;
-            }
-        }
-    }
+			Task killPlayer = serverManager.PlayerKilled(players[playerIndex]);
+		}
+        else   
+		    players[playerIndex] = nullPlayer;
+
+		currentPlayerCount--;
+	}
 
     public void SetAlignment(string hash, int alignment) {
         int id = GetPlayerIndex(hash);
         players[id].alignment = alignment;
 
-        if (alignment == 2) rebels.Add(players[GetPlayerIndex(hash)]);
+        if (alignment == 2) rebels.Add(hash);
+        if (alignment == 1) loyalists.Add(hash);
     }
 
     public void SetRole(string hash, int role) {
         int id = GetPlayerIndex(hash);
         players[id].role = role; 
+
+        if (players[id].alignment == 3 && players[id].role == 1)
+            offensiveNeutrals.Add(hash);
+        else if (players[id].alignment == 3 && players[id].role == 2)
+            serverManager.winners.Add(players[id].id);
+        else if (players[id].alignment == 2 &&  players[id].role == 1)
+            offensiveRebels.Add(hash);
     }
 
     public int GetPlayerIndex(string hash)
@@ -116,6 +133,14 @@ public class PlayerManager : MonoBehaviour
             if (players[i].id == hash) return i;
 
         return -1;
+    }
+
+    public Player GetPlayer(string hash)
+    {
+        for (int i = 0; i < players.Length; ++i)
+            if (players[i].id == hash) return players[i];
+
+        return nullPlayer;
     }
 
     public bool IsPlayer(int index)
@@ -130,7 +155,7 @@ public class PlayerManager : MonoBehaviour
         return players[id].alignment != 0;
     }
 
-    public void PrintPlayers()
+    /*public void PrintPlayers()
     {
         int rebelAmount = 0;
         int neutralAmount = 0;
@@ -183,5 +208,5 @@ public class PlayerManager : MonoBehaviour
         }
 
         Debug.Log("There are: " + loyalistAmount + " loyalists, " +  rebelAmount + " rebels and " + neutralAmount + " neutrals");
-    }
+    }*/
 }

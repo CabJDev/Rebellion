@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 
 public class StateManager : MonoBehaviour
@@ -9,73 +11,136 @@ public class StateManager : MonoBehaviour
     [SerializeField]
     private GameStateViewer gameStateViewer;
 
-    [SerializeField]
     private ServerManager serverManager;
-
-    [SerializeField]
-    private Transform alivePlayerModels;
-    [SerializeField]
-    private Transform deadPlayerModels;
 
     private PlayerManager playerManager;
 
     private int currentState;
 
-    private float currentStateLength;
+    public float currentStateLength;
     private int currentDay;
+
+    [SerializeField] Material fog;
 
     private void Start()
     {
         playerManager = PlayerManager.Instance;
+        serverManager = ServerManager.Instance;
 
         gameStates = new List<IGameState>();
         GetGameStates();
 
         currentState = 0;
         currentDay = 0;
-        currentStateLength = gameStates[0].GetStateLength();
+        currentStateLength = 10;
+
+        serverManager.currentState = currentState;
 
         gameStateViewer.SetDay(currentDay);
         gameStateViewer.SetPhase(gameStates[0].GetStateName());
         gameStateViewer.SetTime(currentStateLength);
 
-        foreach (Player player in playerManager.players)
+        for (int i = 0; i < 15; i++)
         {
-            if (player.id != "")
-            {
-                GameObject playerModel = alivePlayerModels.Find(player.position.ToString()).gameObject;
-                playerModel.SetActive(true);
-            }
-        }
+            Player player = playerManager.players[i];
+            TMP_Text aliveModel = GameObject.Find("_PlayerModels/Alive/" + (i + 1) + "/Name").GetComponent<TMP_Text>();
+			TMP_Text deadModel = GameObject.Find("_PlayerModels/Dead/" + (i + 1) + "/Name").GetComponent<TMP_Text>();
+
+            if (player.id == "") continue;
+            aliveModel.text = player.name;
+            deadModel.text = player.name;
+		}
+
+        ShowAlivePlayer();
     }
 
     private void Update()
     {
-        currentStateLength -= Time.deltaTime;
-        if (currentStateLength <= 0.0f)
+		float currentFloat = fog.GetFloat("_DensityMultiplier");
+		if (currentState == 2 && currentFloat < 0.1f)
+			fog.SetFloat("_DensityMultiplier", Mathf.Lerp(currentFloat, 0.1f, 1 * Time.deltaTime));
+        else if (currentState == 0 && currentFloat > 0.01f)
+			fog.SetFloat("_DensityMultiplier", Mathf.Lerp(currentFloat, 0.01f, 1 * Time.deltaTime));
+
+
+		if (serverManager.gameFinished) return;
+
+        if (!serverManager.pauseGame) currentStateLength -= Time.deltaTime;
+		if (!serverManager.pauseGame && currentStateLength <= 0.0f) EndState();
+		else if (serverManager.pauseGame)
         {
-            gameStates[currentState].EndState();
+			if (!serverManager.endDayEarly) return;
+			serverManager.endDayEarly = false;
+            serverManager.pauseGame = false;
+			EndState();
+		}
 
-            if (currentDay == 0 && currentState == 0)
-                currentState = 2;
-            else
-                ++currentState;
+        if (serverManager.pauseGame)
+            gameStateViewer.SetTime(serverManager.pauseGameTimer);
+        else
+			gameStateViewer.SetTime(currentStateLength);
+	}
 
-            if (currentState == gameStates.Count)
-            {
-                currentState = 0;
-                ++currentDay;
+    private void EndState()
+    {
+		serverManager.CheckWinConditions();
 
-                gameStateViewer.SetDay(currentDay);
-            }
+        if (serverManager.gameFinished) return;
 
-            gameStates[currentState].Transition();
-            currentStateLength = gameStates[currentState].GetStateLength();
+		gameStates[currentState].EndState();
 
-            gameStateViewer.SetPhase(gameStates[currentState].GetStateName());
+		if (currentDay == 0 && currentState == 0)
+			currentState = 2;
+		else
+			++currentState;
+
+		if (currentState == gameStates.Count)
+		{
+			currentState = 0;
+			++currentDay;
+
+			gameStateViewer.SetDay(currentDay);
+			Task sendMessage = serverManager.SystemMessage("Day " + currentDay);
+		}
+
+		serverManager.currentState = currentState;
+
+		gameStates[currentState].Transition();
+		currentStateLength = gameStates[currentState].GetStateLength();
+
+		gameStateViewer.SetPhase(gameStates[currentState].GetStateName());
+	}
+
+    public void ShowAlivePlayer()
+    {
+        for (int i = 0; i < 15; i++)
+        {
+            Player player = playerManager.players[i];
+
+            if (player.id == "" || !player.alive) continue;
+            GameObject model = GameObject.Find("_PlayerModels/Alive/" + (i + 1));
+            model.SetActive(true);
         }
-        gameStateViewer.SetTime(currentStateLength);
     }
+
+    public void HidePlayers()
+    {
+        for (int i = 0; i < 15; i++)
+        {
+            GameObject model = GameObject.Find("_PlayerModels/Alive/" + (i + 1));
+            model.SetActive(false);
+        }
+    }
+
+    public void ShowDeadPlayer(int index)
+    {
+		Player player = playerManager.players[index];
+
+		if (player.id == "" || player.alive) return;
+		GameObject model = GameObject.Find("_PlayerModels/Dead/" + (index + 1));
+        if (model == null) return;
+		model.SetActive(true);
+	}
 
     private void GetGameStates()
     {
